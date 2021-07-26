@@ -173,7 +173,7 @@ func parse(r io.Reader) (*Node, error) {
 	decoder.CharsetReader = charset.NewReaderLabel
 	prev := doc
 	for {
-		tok, err := decoder.Token()
+		tok, err := decoder.RawToken()
 		switch {
 		case err == io.EOF:
 			goto quit
