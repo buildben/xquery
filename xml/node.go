@@ -65,13 +65,16 @@ func (n *Node) InnerText() string {
 }
 
 func outputXML(buf *bytes.Buffer, n *Node) {
-	if n.Type == TextNode || n.Type == CommentNode {
+	switch n.Type {
+	case TextNode:
 		xml.EscapeText(buf, []byte(strings.TrimSpace(n.Data)))
 		return
-	}
-	if n.Type == DeclarationNode {
+	case CommentNode:
+		buf.WriteString("<!--" + n.Data + "-->")
+		return
+	case DeclarationNode:
 		buf.WriteString("<?" + n.Data)
-	} else {
+	default:
 		buf.WriteString("<" + n.Data)
 	}
 
