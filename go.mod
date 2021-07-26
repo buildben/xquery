@@ -1,4 +1,4 @@
-module buildben/xquery
+module github.com/buildben/xquery
 
 go 1.16
 
