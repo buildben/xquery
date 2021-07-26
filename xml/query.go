@@ -4,6 +4,7 @@ Package xmlquery provides extract data from XML documents using XPath expression
 package xmlquery
 
 import (
+	"encoding/xml"
 	"fmt"
 	"strings"
 
@@ -15,6 +16,32 @@ func (n *Node) RemoveElements(expr string) {
 	FindEach(n, expr, func(i int, n *Node) {
 		remove(n)
 	})
+}
+
+//AddElement add child element with the specified name, attributes, and inner value, to the parent node that matches by the specified XPath expr.
+func (n *Node) AddElement(name string, attr []xml.Attr, innerText string, parentExpr string) {
+	parent := FindOne(n, parentExpr)
+	if parent == nil {
+		return
+	}
+
+	elementNode := &Node{
+		Type:  ElementNode,
+		Data:  name,
+		Attr:  attr,
+		level: parent.level + 1,
+	}
+	addChild(parent, elementNode)
+
+	if innerText == "" {
+		return
+	}
+	textNode := &Node{
+		Type:  TextNode,
+		Data:  innerText,
+		level: elementNode.level + 1,
+	}
+	addChild(elementNode, textNode)
 }
 
 // SelectElements finds child elements with the specified name.
