@@ -141,6 +141,31 @@ func addChild(parent, n *Node) {
 	parent.LastChild = n
 }
 
+func remove(n *Node) {
+	if n.Parent == nil {
+		return
+	}
+
+	parent := n.Parent
+	if n.PrevSibling != nil {
+		n.PrevSibling.NextSibling = n.NextSibling
+		if parent.LastChild == n {
+			parent.LastChild = n.PrevSibling
+		}
+	} else {
+		parent.FirstChild = n.NextSibling
+	}
+
+	if n.NextSibling != nil {
+		n.NextSibling.PrevSibling = n.PrevSibling
+		if parent.FirstChild == n {
+			parent.FirstChild = n.NextSibling
+		}
+	} else {
+		parent.LastChild = n.PrevSibling
+	}
+}
+
 func addSibling(sibling, n *Node) {
 	for t := sibling.NextSibling; t != nil; t = t.NextSibling {
 		sibling = t

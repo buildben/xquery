@@ -10,6 +10,13 @@ import (
 	"github.com/antchfx/xpath"
 )
 
+//RemoveElements remove elements nodes that matches by the specified XPath expr
+func (n *Node) RemoveElements(expr string) {
+	FindEach(n, expr, func(i int, n *Node) {
+		remove(n)
+	})
+}
+
 // SelectElements finds child elements with the specified name.
 func (n *Node) SelectElements(name string) []*Node {
 	return Find(n, name)
