@@ -1,7 +1,6 @@
 package xmlquery
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -41,7 +40,7 @@ const xmlDoc = `
    </book>
 </catalog>`
 
-var doc = loadXML(xmlDoc)
+var doc = LoadXML(xmlDoc)
 
 func TestXPath(t *testing.T) {
 	if list := Find(doc, "//book"); len(list) != 3 {
@@ -70,7 +69,7 @@ func TestXPath(t *testing.T) {
 }
 
 func TestXPathCdUp(t *testing.T) {
-	doc := loadXML(`<a><b attr="1"/></a>`)
+	doc := LoadXML(`<a><b attr="1"/></a>`)
 	node := FindOne(doc, "/a/b/@attr/..")
 	t.Logf("node = %#v", node)
 	if node == nil || node.Data != "b" {
@@ -106,10 +105,21 @@ func TestNavigator(t *testing.T) {
 	}
 }
 
-func loadXML(s string) *Node {
-	node, err := Parse(strings.NewReader(s))
-	if err != nil {
-		panic(err)
+func TestAddElement(t *testing.T) {
+	doc := LoadXML(`<a><b attr="1"></b></a>`)
+	doc.AddElement("c", nil, "6", "/a/b")
+	node := FindOne(doc, "/a/b/c")
+	t.Logf("node = %#v", node)
+	if node == nil || node.Data != "c" {
+		t.Fatal("/a/b/c != <c/>")
 	}
-	return node
+}
+
+func TestRemoveElement(t *testing.T) {
+	doc := LoadXML(`<a><b attr="1"><c/><c/></b></a>`)
+	doc.RemoveElements("/a/b/c")
+	node := FindOne(doc, "/a/b/c")
+	if node != nil {
+		t.Fatal("removing <c> element failed")
+	}
 }
