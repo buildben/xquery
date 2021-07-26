@@ -67,7 +67,7 @@ func (n *Node) InnerText() string {
 func outputXML(buf *bytes.Buffer, n *Node) {
 	switch n.Type {
 	case TextNode:
-		xml.EscapeText(buf, []byte(strings.TrimSpace(n.Data)))
+		buf.WriteString(strings.TrimSpace(n.Data))
 		return
 	case CommentNode:
 		buf.WriteString("<!--" + n.Data + "-->")
